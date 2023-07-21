@@ -73,7 +73,6 @@ The smart contract incorporates the OpenZeppelin Ownable contract, which ensures
 ## Authors
 ex. Mayank Varshney (21BCS7009)
 
-
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the MIT License. See the [LICENCE] () file for details.
