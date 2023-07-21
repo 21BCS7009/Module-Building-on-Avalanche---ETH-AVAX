@@ -75,4 +75,4 @@ ex. Mayank Varshney (21BCS7009)
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENCE] () file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/21BCS7009/Module-Building-on-Avalanche---ETH-AVAX/blob/main/LICENSE) file for details.
