@@ -8,50 +8,55 @@
 
 
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18;
+pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts@4.9.2/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts@4.9.2/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts@4.9.2/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Degen is ERC20, ERC20Burnable, Ownable {
-    constructor() ERC20("Degen", "DGN") {}
+contract DegenToken is ERC20, Ownable {
+    // Mapping to store the in-game store items and their costs in tokens
+    mapping(string => uint256) private _itemPrices;
 
-    function Mint_Token(address to, uint256 value) public onlyOwner {
-        _mint(to, value);
+    event ItemRedeemed(address indexed player, string item);
+
+    constructor() ERC20("Degen Gaming Token", "DGT") {
+        // Mint initial supply to the contract deployer (owner)
+        _mint(msg.sender, 1000000 * 10**decimals());
     }
 
-    function Burn_Tokens(uint256 value) external {
-        require(balanceOf(msg.sender) >= value, "You do not have enough Tokens");
-        _burn(msg.sender, value);
+    // Function to mint new tokens (only the owner can do this)
+    function mint(address account, uint256 amount) public onlyOwner {
+        _mint(account, amount);
+        emit Transfer(address(0), account, amount);
     }
 
-    // Redeem tokens for Ether based on the fixed exchange rate (1 Ether for every 10 tokens).
-    function RedeemTokens(uint256 choice) external {
-        // Calculate the number of tokens to redeem based on the fixed exchange rate.
-        uint256 tokensToRedeem = choice;
-        require(balanceOf(msg.sender) >= tokensToRedeem, "Not enough tokens to redeem");
+    // Function to redeem tokens for items in the in-game store
+    function redeem(string memory item) public {
+        require(_itemPrices[item] > 0, "Item not available for redemption");
+        require(balanceOf(msg.sender) >= _itemPrices[item], "Insufficient balance");
 
-        // Calculate the amount of Ether to send to the redeemer based on the fixed rate.
-        uint256 etherToTransfer = tokensToRedeem / 10; // 1 Ether for every 10 tokens.
+        // Perform the redemption (in this example, transfer the tokens to the contract owner)
+        _transfer(msg.sender, owner(), _itemPrices[item]);
 
-        // Ensure the contract has enough Ether to send to the redeemer.
-        require(address(this).balance >= etherToTransfer, "Contract does not have enough Ether");
-
-        // Transfer the tokens from the redeemer to the contract.
-        _burn(msg.sender, tokensToRedeem);
-
-        // Transfer Ether to the redeemer.
-        payable(msg.sender).transfer(etherToTransfer);
+        emit ItemRedeemed(msg.sender, item);
     }
 
-    function Transfer_Tokens(address to, uint256 value) external {
-        require(balanceOf(msg.sender) >= value, "You are not Owner");
-        approve(msg.sender, value);
-        transferFrom(msg.sender, to, value);
+    // Function to add items and their prices to the in-game store
+    function addItemToStore(string memory item, uint256 price) public onlyOwner {
+        require(price > 0, "Price must be greater than zero");
+        _itemPrices[item] = price;
     }
 
-    function Check_Balance() external view returns (uint256) {
-        return balanceOf(msg.sender);
+    // Function to check the price of an item in the in-game store
+    function getItemPrice(string memory item) public view returns (uint256) {
+        return _itemPrices[item];
+    }
+
+    // Function to burn tokens (anyone can do this)
+    function burn(uint256 amount) public {
+        require(amount > 0, "Amount must be greater than zero");
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+
+        _burn(msg.sender, amount);
     }
 }
