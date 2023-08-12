@@ -1,74 +1,63 @@
-# Degen Gaming Token (DGN) - Avalanche Network ERC20 Smart Contract
+# Degen Gaming Token (DGT) Smart Contract
 
-Degen Gaming Token (DGN) is an ERC20-compliant token deployed on the Avalanche network. It serves as the in-game currency for Degen Gaming platform, allowing players to earn rewards, trade tokens with each other, and redeem them for items in the in-game store. The smart contract includes functionalities for minting new tokens, transferring tokens, redeeming tokens for Ether, checking token balances, and burning tokens when they are no longer needed.
+The Degen Gaming Token (DGT) is an ERC-20 token smart contract designed for use in a gaming ecosystem. It allows users to purchase in-game items using the token and provides functionality for minting, burning, and managing the in-game store.
 
-## Description
+## Table of Contents
 
-### Smart Contract Details
-* Contract Name: Degen
-* Token Name: Degen Gaming Token
-* Token Symbol: DGN
-* Version: 0.8.18
-* SPDX-License-Identifier: MIT
+- [Overview](#overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Functions](#functions)
+- [License](#license)
+
+## Overview
+
+The Degen Gaming Token (DGT) is an ERC-20 token based on the Ethereum blockchain. It extends the OpenZeppelin ERC20 and Ownable contracts, providing additional functionalities specifically designed for gaming applications. The smart contract includes features for minting new tokens, burning tokens, redeeming tokens for in-game items, and managing the in-game store.
+
+## Features
+
+- Minting: The contract owner can mint new DGT tokens.
+- Burning: Users can burn their DGT tokens.
+- In-Game Store: Users can redeem DGT tokens for in-game items.
+- Ownership: The contract includes an Ownable pattern to ensure controlled access.
 
 ## Getting Started
 
-## Functionalities
-### Minting New Tokens
-The platform owner can create and distribute new tokens as rewards to players. Only the owner has the authority to mint tokens.
+1. Clone the repository: `git clone https://github.com/yourusername/degen-gaming-token.git`
+2. Install dependencies: `npm install`
+3. Compile the contract: `npx hardhat compile`
 
-```
-function Mint_Token(address to, uint256 value) public onlyOwner {
-    _mint(to, value);
-}
-```
-### Transferring Tokens
-Players can transfer their tokens to other addresses. They must have a sufficient token balance to initiate the transfer.
+## Usage
 
-```
-function Transfer_Tokens(address to, uint256 value) external {
-    require(balanceOf(msg.sender) >= value, "Insufficient balance");
-    approve(msg.sender, value);
-    transferFrom(msg.sender, to, value);
-}
-```
-### Redeeming Tokens for Ether
-Players can redeem their tokens for Ether based on a fixed exchange rate of 1 Ether for every 10 tokens. The smart contract must have enough Ether to fulfill the redemption request.
+1. Deploy the contract using a development environment like Remix or Hardhat.
+2. Mint initial tokens to the owner's account using the `mint` function.
+3. Add items to the in-game store using the `addItemToStore` function.
+4. Users can obtain DGT tokens by purchasing them or receiving them in transactions.
+5. Users can redeem tokens for in-game items using the `redeem` function.
+6. Anyone can burn their DGT tokens using the `burn` function.
 
-```
-function RedeemTokens(uint256 choice) external {
-    uint256 tokensToRedeem = choice;
-    require(balanceOf(msg.sender) >= tokensToRedeem, "Insufficient tokens to redeem");
+## Functions
 
-    uint256 etherToTransfer = tokensToRedeem / 10; // 1 Ether for every 10 tokens.
-    require(address(this).balance >= etherToTransfer, "Contract does not have enough Ether");
+### `mint(address account, uint256 amount)`
 
-    _burn(msg.sender, tokensToRedeem);
-    payable(msg.sender).transfer(etherToTransfer);
-}
-```
+Mints a specified amount of DGT tokens and assigns them to the given account.
 
-### Checking Token Balance
-Players can check their token balance at any time using this function.
+### `redeem(string memory item)`
 
-```
-function Check_Balance() external view returns (uint256) {
-    return balanceOf(msg.sender);
-}
-```
+Allows users to redeem DGT tokens for in-game items based on the provided item's name.
 
-### Burning Tokens
-Anyone can burn tokens they own, which are no longer needed. This function helps in reducing the total token supply.
+### `addItemToStore(string memory item, uint256 price)`
 
-```
-function Burn_Tokens(uint256 value) external {
-    require(balanceOf(msg.sender) >= value, "Insufficient tokens to burn");
-    _burn(msg.sender, value);
-}
-```
+Adds a new item to the in-game store with the specified price in DGT tokens.
 
-### Ownership and Access Control
-The smart contract incorporates the OpenZeppelin Ownable contract, which ensures that only the owner of the contract can mint new tokens.
+### `getItemPrice(string memory item)`
+
+Retrieves the price of a specific item in the in-game store.
+
+### `burn(uint256 amount)`
+
+Allows users to burn their DGT tokens, reducing their balance by the specified amount.
 
 ## Authors
 ex. Mayank Varshney (21BCS7009)
@@ -76,3 +65,12 @@ ex. Mayank Varshney (21BCS7009)
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/21BCS7009/Module-Building-on-Avalanche---ETH-AVAX/blob/main/LICENSE) file for details.
+
+---
+
+For more details and examples, refer to the [OpenZeppelin documentation](https://docs.openzeppelin.com/contracts/4.x/).
+
+
+
+
+
