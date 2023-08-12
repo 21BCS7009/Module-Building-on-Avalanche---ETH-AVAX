@@ -19,15 +19,29 @@ contract DegenToken is ERC20, Ownable {
 
     event ItemRedeemed(address indexed player, string item);
 
-    constructor() ERC20("Degen Gaming Token", "DGT") {
+    constructor() ERC20("DegenToken", "DGN") {
         // Mint initial supply to the contract deployer (owner)
-        _mint(msg.sender, 1000000 * 10**decimals());
+        _mint(msg.sender, 10 * decimals());
     }
 
     // Function to mint new tokens (only the owner can do this)
     function mint(address account, uint256 amount) public onlyOwner {
         _mint(account, amount);
         emit Transfer(address(0), account, amount);
+    }
+
+    // Function to burn tokens (anyone can do this)
+    function burn(uint256 amount) public {
+        require(amount > 0, "Amount must be greater than zero");
+        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
+
+        _burn(msg.sender, amount);
+    }
+
+    // Function to add items and their prices to the in-game store
+    function addItemToStore(string memory item, uint256 price) public onlyOwner {
+        require(price > 0, "Price must be greater than zero");
+        _itemPrices[item] = price;
     }
 
     // Function to redeem tokens for items in the in-game store
@@ -41,22 +55,8 @@ contract DegenToken is ERC20, Ownable {
         emit ItemRedeemed(msg.sender, item);
     }
 
-    // Function to add items and their prices to the in-game store
-    function addItemToStore(string memory item, uint256 price) public onlyOwner {
-        require(price > 0, "Price must be greater than zero");
-        _itemPrices[item] = price;
-    }
-
     // Function to check the price of an item in the in-game store
     function getItemPrice(string memory item) public view returns (uint256) {
         return _itemPrices[item];
-    }
-
-    // Function to burn tokens (anyone can do this)
-    function burn(uint256 amount) public {
-        require(amount > 0, "Amount must be greater than zero");
-        require(balanceOf(msg.sender) >= amount, "Insufficient balance");
-
-        _burn(msg.sender, amount);
     }
 }
